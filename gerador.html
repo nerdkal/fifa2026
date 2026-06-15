@@ -1,125 +1,275 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gerador de Squad FIFA - Escudo</title>
-<style>
-:root{--gold:#FFD700;--blue:#045694;--red:#f43056;--text-dark:#03122b}
-body{margin:0;padding:40px;box-sizing:border-box;font-family:'Arial Black',sans-serif;background:radial-gradient(circle,#0a2e50 0%,#03122b 100%);color:white;min-height:100vh}
-.page{display:none}.page.active{display:block}
-.conversor-container{max-width:1100px;margin:auto;background:rgba(255,255,255,.08);padding:30px;border-radius:20px}
-textarea{width:100%;font-family:monospace;margin-bottom:15px;padding:15px;border:none;border-radius:12px;background:white;color:#333}
-#scriptConsole{height:200px}#input{height:250px}#output{height:300px;display:none}
-button{cursor:pointer;padding:15px 25px;background:var(--red);color:white;border:none;border-radius:10px;font-weight:bold;margin-right:10px}
-.btn-gerar-estilizado {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 15px 40px;
-    font-family: 'Poppins', sans-serif;
-    font-size: 1.2rem;
-    font-weight: 900;
-    color: white;
-    background: #6225E6;
-    border: none;
-    cursor: pointer;
-    transition: 0.5s;
-    box-shadow: 6px 6px 0 black;
-    transform: skewX(-15deg);
-    margin: 30px auto;
-}
-
-.btn-gerar-estilizado:hover {
-    transition: 0.5s;
-    box-shadow: 10px 10px 0 #FBC638;
-}
-
-.btn-gerar-estilizado span {
-    transform: skewX(15deg); /* Corrige a inclinação do texto/ícone */
-    display: flex;
-    align-items: center;
-}
-.squad-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:40px;max-width:1200px;margin:0 auto}
-.card{background:#fff;clip-path:polygon(0% 0%, 100% 0%, 100% 80%, 50% 100%, 0% 80%); border-radius: 25px;padding:10px 10px 50px 20px;display:flex;flex-direction:column;align-items:center;text-align:center;box-shadow:0 10px 25px rgba(0,0,0,0.5)}@keyframes float{0%{transform:translateY(0)}50%{transform:translateY(-10px)}100%{transform:translateY(0)}}
-.floating{animation:float 3s ease-in-out infinite}
-.card-flag{width:45px;height:35px;margin-bottom:10px;object-fit:contain}
-.card-photo{width:225px;height:225px;object-fit:contain;margin-bottom:5px;margin-top:-10px}
-.name{color:var(--text-dark);font-size:0.95rem;font-weight:800;margin:5px 0;text-transform:uppercase}
-.card-divider{width:50px;height:2px;background:#ccc;margin:5px 0}
-.position{color:var(--blue);font-size:0.75rem;font-weight:700;text-transform:uppercase;margin-top:2px}
-</style>
-</head>
-<body>
-
-<div id="page-converter" class="page active">
-    <div class="conversor-container">
-        <h2>Conversor FIFA HTML → JSON</h2>
-        <textarea id="scriptConsole">const players = Array.from(document.querySelectorAll('img.image_img__pNjkh')).map(img => { const name = (img.alt || '').trim(); if (!name || name === 'FIFA' || name.includes('GooglePlayStore')) return null; let playerSrc = img.src || img.getAttribute('data-src') || img.currentSrc || ''; if (playerSrc.includes('w3schools')) playerSrc = ''; const badgeCard = img.closest('[class*="badgeCard"]'); let flagSrc = ''; if (badgeCard) { const allImgs = Array.from(badgeCard.querySelectorAll('img')); const flagImg = allImgs.find(i => i !== img && (i.className.includes('flag') || i.src.includes('flags'))); flagSrc = flagImg ? (flagImg.src || flagImg.getAttribute('data-src') || '') : ''; } let position = badgeCard?.querySelector('[class*="playerPosition"]')?.innerText?.trim(); if (!position) position = 'PLAYER'; return `<div class="player-card"><img src="${playerSrc}" class="player-photo"><img src="${flagSrc}" class="flag-icon"><div class="name">${name}</div><div class="position">${position}</div></div>`; }).filter(item => item && item.includes('src="http')).join('\n'); console.log(players);</textarea>
-        <button onclick="copiarScript()">📋 Copiar Script</button>
-        <hr>
-        <p><strong>Cole o HTML dos jogadores:</strong></p>
-        <textarea id="input"></textarea>
-        <button onclick="converter()" class="btn-gerar-estilizado">
-    <span>CONVERTER E GERAR CARDS</span>
-</button>
-        <button onclick="toggleJSON()" style="background:#555">👁️ Mostrar/Esconder JSON</button>
-        <textarea id="output"></textarea>
+<div class="player-card">
+      <img src="https://digitalhub.fifa.com/transform/b630bdbe-3615-43b0-b715-8da37b1ecfa6/COURTOIS-Thibaut_358106?&io=transform:fill,aspectratio:1x1,width:320,gravity:top&quality=75" alt="Thibaut COURTOIS" class="player-photo">
+      <div class="info">
+        <div class="name-row" style="display: flex; align-items: center; gap: 5px;">
+          <img src="https://api.fifa.com/api/v3/picture/flags-sq-4/BEL" class="flag-icon" style="width: 20px;">
+          <div class="name">Thibaut COURTOIS</div>
+        </div>
+        <div class="position">GOALKEEPER</div>
+      </div>
     </div>
-</div>
+<div class="player-card">
+      <img src="https://digitalhub.fifa.com/transform/9e407610-b85c-45d8-847a-2bae1d24e699/LAMMENS-Senne_495348?&io=transform:fill,aspectratio:1x1,width:320,gravity:top&quality=75" alt="Senne LAMMENS" class="player-photo">
+      <div class="info">
+        <div class="name-row" style="display: flex; align-items: center; gap: 5px;">
+          <img src="https://api.fifa.com/api/v3/picture/flags-sq-4/BEL" class="flag-icon" style="width: 20px;">
+          <div class="name">Senne LAMMENS</div>
+        </div>
+        <div class="position">GOALKEEPER</div>
+      </div>
+    </div>
+<div class="player-card">
+      <img src="https://digitalhub.fifa.com/transform/88da8ae8-d4af-47b1-8f4c-e3ac46fbc226/PENDERS-Mike_499803?&io=transform:fill,aspectratio:1x1,width:320,gravity:top&quality=75" alt="Mike PENDERS" class="player-photo">
+      <div class="info">
+        <div class="name-row" style="display: flex; align-items: center; gap: 5px;">
+          <img src="https://api.fifa.com/api/v3/picture/flags-sq-4/BEL" class="flag-icon" style="width: 20px;">
+          <div class="name">Mike PENDERS</div>
+        </div>
+        <div class="position">GOALKEEPER</div>
+      </div>
+    </div>
+<div class="player-card">
+      <img src="https://digitalhub.fifa.com/transform/f6f8a277-eb22-4353-9ce1-a8abe7749d1d/DEBAST-Zeno_448369?&io=transform:fill,aspectratio:1x1,width:320,gravity:top&quality=75" alt="Zeno DEBAST" class="player-photo">
+      <div class="info">
+        <div class="name-row" style="display: flex; align-items: center; gap: 5px;">
+          <img src="https://api.fifa.com/api/v3/picture/flags-sq-4/BEL" class="flag-icon" style="width: 20px;">
+          <div class="name">Zeno DEBAST</div>
+        </div>
+        <div class="position">DEFENDER</div>
+      </div>
+    </div>
+<div class="player-card">
+      <img src="https://digitalhub.fifa.com/transform/34da124d-c474-4154-90e9-aa132a5df818/THEATE-Arthur_448346?&io=transform:fill,aspectratio:1x1,width:320,gravity:top&quality=75" alt="Arthur THEATE" class="player-photo">
+      <div class="info">
+        <div class="name-row" style="display: flex; align-items: center; gap: 5px;">
+          <img src="https://api.fifa.com/api/v3/picture/flags-sq-4/BEL" class="flag-icon" style="width: 20px;">
+          <div class="name">Arthur THEATE</div>
+        </div>
+        <div class="position">DEFENDER</div>
+      </div>
+    </div>
+<div class="player-card">
+      <img src="https://digitalhub.fifa.com/transform/dda9e35d-eedf-403b-8953-a5dc213fbf67/MECHELE-Brandon_448360?&io=transform:fill,aspectratio:1x1,width:320,gravity:top&quality=75" alt="Brandon MECHELE" class="player-photo">
+      <div class="info">
+        <div class="name-row" style="display: flex; align-items: center; gap: 5px;">
+          <img src="https://api.fifa.com/api/v3/picture/flags-sq-4/BEL" class="flag-icon" style="width: 20px;">
+          <div class="name">Brandon MECHELE</div>
+        </div>
+        <div class="position">DEFENDER</div>
+      </div>
+    </div>
+<div class="player-card">
+      <img src="https://digitalhub.fifa.com/transform/1c22dfc4-3eb2-4778-b310-ef4b62aef0c6/DE-CUYPER-Maxim_448373?&io=transform:fill,aspectratio:1x1,width:320,gravity:top&quality=75" alt="Maxim DE CUYPER" class="player-photo">
+      <div class="info">
+        <div class="name-row" style="display: flex; align-items: center; gap: 5px;">
+          <img src="https://api.fifa.com/api/v3/picture/flags-sq-4/BEL" class="flag-icon" style="width: 20px;">
+          <div class="name">Maxim DE CUYPER</div>
+        </div>
+        <div class="position">DEFENDER</div>
+      </div>
+    </div>
+<div class="player-card">
+      <img src="https://digitalhub.fifa.com/transform/13d6695b-4220-48cb-91b1-16a60dff2aa6/MEUNIER-Thomas_358122?&io=transform:fill,aspectratio:1x1,width:320,gravity:top&quality=75" alt="Thomas MEUNIER" class="player-photo">
+      <div class="info">
+        <div class="name-row" style="display: flex; align-items: center; gap: 5px;">
+          <img src="https://api.fifa.com/api/v3/picture/flags-sq-4/BEL" class="flag-icon" style="width: 20px;">
+          <div class="name">Thomas MEUNIER</div>
+        </div>
+        <div class="position">DEFENDER</div>
+      </div>
+    </div>
+<div class="player-card">
+      <img src="https://digitalhub.fifa.com/transform/a19702c3-a309-4e23-9957-dfbe0d9d5d43/DE-WINTER-Koni_448366?&io=transform:fill,aspectratio:1x1,width:320,gravity:top&quality=75" alt="Koni DE WINTER" class="player-photo">
+      <div class="info">
+        <div class="name-row" style="display: flex; align-items: center; gap: 5px;">
+          <img src="https://api.fifa.com/api/v3/picture/flags-sq-4/BEL" class="flag-icon" style="width: 20px;">
+          <div class="name">Koni DE WINTER</div>
+        </div>
+        <div class="position">DEFENDER</div>
+      </div>
+    </div>
+<div class="player-card">
+      <img src="https://digitalhub.fifa.com/transform/33c2b9de-5ae7-4fa1-8db8-6cff8e2b02f0/SEYS-Joaquin_506088?&io=transform:fill,aspectratio:1x1,width:320,gravity:top&quality=75" alt="Joaquin SEYS" class="player-photo">
+      <div class="info">
+        <div class="name-row" style="display: flex; align-items: center; gap: 5px;">
+          <img src="https://api.fifa.com/api/v3/picture/flags-sq-4/BEL" class="flag-icon" style="width: 20px;">
+          <div class="name">Joaquin SEYS</div>
+        </div>
+        <div class="position">DEFENDER</div>
+      </div>
+    </div>
+<div class="player-card">
+      <img src="https://digitalhub.fifa.com/transform/58f1cc7c-04f4-43ba-bc82-85c1226fb7a2/CASTAGNE-Timothy_411443?&io=transform:fill,aspectratio:1x1,width:320,gravity:top&quality=75" alt="Timothy CASTAGNE" class="player-photo">
+      <div class="info">
+        <div class="name-row" style="display: flex; align-items: center; gap: 5px;">
+          <img src="https://api.fifa.com/api/v3/picture/flags-sq-4/BEL" class="flag-icon" style="width: 20px;">
+          <div class="name">Timothy CASTAGNE</div>
+        </div>
+        <div class="position">DEFENDER</div>
+      </div>
+    </div>
+<div class="player-card">
+      <img src="https://digitalhub.fifa.com/transform/77bea513-328c-4af6-a1b6-89efdfeb03ae/NGOY-Nathan_514166?&io=transform:fill,aspectratio:1x1,width:320,gravity:top&quality=75" alt="Nathan NGOY" class="player-photo">
+      <div class="info">
+        <div class="name-row" style="display: flex; align-items: center; gap: 5px;">
+          <img src="https://api.fifa.com/api/v3/picture/flags-sq-4/BEL" class="flag-icon" style="width: 20px;">
+          <div class="name">Nathan NGOY</div>
+        </div>
+        <div class="position">DEFENDER</div>
+      </div>
+    </div>
+<div class="player-card">
+      <img src="https://digitalhub.fifa.com/transform/ff0110d3-0721-4983-bc62-018a993d8486/WITSEL-Axel_290821?&io=transform:fill,aspectratio:1x1,width:320,gravity:top&quality=75" alt="Axel WITSEL" class="player-photo">
+      <div class="info">
+        <div class="name-row" style="display: flex; align-items: center; gap: 5px;">
+          <img src="https://api.fifa.com/api/v3/picture/flags-sq-4/BEL" class="flag-icon" style="width: 20px;">
+          <div class="name">Axel WITSEL</div>
+        </div>
+        <div class="position">MIDFIELDER</div>
+      </div>
+    </div>
+<div class="player-card">
+      <img src="https://digitalhub.fifa.com/transform/41fb7de3-9f9e-44f1-b63f-0551f5d33b2b/DE-BRUYNE-Kevin_358120?&io=transform:fill,aspectratio:1x1,width:320,gravity:top&quality=75" alt="Kevin DE BRUYNE" class="player-photo">
+      <div class="info">
+        <div class="name-row" style="display: flex; align-items: center; gap: 5px;">
+          <img src="https://api.fifa.com/api/v3/picture/flags-sq-4/BEL" class="flag-icon" style="width: 20px;">
+          <div class="name">Kevin DE BRUYNE</div>
+        </div>
+        <div class="position">MIDFIELDER</div>
+      </div>
+    </div>
+<div class="player-card">
+      <img src="https://digitalhub.fifa.com/transform/158822ad-a0e9-406c-a84d-e79b0392409f/TIELEMANS-Youri_401444?&io=transform:fill,aspectratio:1x1,width:320,gravity:top&quality=75" alt="Youri TIELEMANS" class="player-photo">
+      <div class="info">
+        <div class="name-row" style="display: flex; align-items: center; gap: 5px;">
+          <img src="https://api.fifa.com/api/v3/picture/flags-sq-4/BEL" class="flag-icon" style="width: 20px;">
+          <div class="name">Youri TIELEMANS</div>
+        </div>
+        <div class="position">MIDFIELDER</div>
+      </div>
+    </div>
+<div class="player-card">
+      <img src="https://digitalhub.fifa.com/transform/dfe97726-1409-4cc2-8463-39184fab3a04/MOREIRA-Diego_497902?&io=transform:fill,aspectratio:1x1,width:320,gravity:top&quality=75" alt="Diego MOREIRA" class="player-photo">
+      <div class="info">
+        <div class="name-row" style="display: flex; align-items: center; gap: 5px;">
+          <img src="https://api.fifa.com/api/v3/picture/flags-sq-4/BEL" class="flag-icon" style="width: 20px;">
+          <div class="name">Diego MOREIRA</div>
+        </div>
+        <div class="position">MIDFIELDER</div>
+      </div>
+    </div>
+<div class="player-card">
+      <img src="https://digitalhub.fifa.com/transform/9018ca03-c5c1-4dc1-8d4f-7ee07308dc55/VANAKEN-Hans_448343?&io=transform:fill,aspectratio:1x1,width:320,gravity:top&quality=75" alt="Hans VANAKEN" class="player-photo">
+      <div class="info">
+        <div class="name-row" style="display: flex; align-items: center; gap: 5px;">
+          <img src="https://api.fifa.com/api/v3/picture/flags-sq-4/BEL" class="flag-icon" style="width: 20px;">
+          <div class="name">Hans VANAKEN</div>
+        </div>
+        <div class="position">MIDFIELDER</div>
+      </div>
+    </div>
+<div class="player-card">
+      <img src="https://digitalhub.fifa.com/transform/f4764c32-f702-4695-9658-28479916fa99/SAELEMAEKERS-Alexis_433092?&io=transform:fill,aspectratio:1x1,width:320,gravity:top&quality=75" alt="Alexis SAELEMAEKERS" class="player-photo">
+      <div class="info">
+        <div class="name-row" style="display: flex; align-items: center; gap: 5px;">
+          <img src="https://api.fifa.com/api/v3/picture/flags-sq-4/BEL" class="flag-icon" style="width: 20px;">
+          <div class="name">Alexis SAELEMAEKERS</div>
+        </div>
+        <div class="position">MIDFIELDER</div>
+      </div>
+    </div>
+<div class="player-card">
+      <img src="https://digitalhub.fifa.com/transform/2a366682-88f4-4d6f-ae54-e474030615cc/RASKIN-Nicolas_495349?&io=transform:fill,aspectratio:1x1,width:320,gravity:top&quality=75" alt="Nicolas RASKIN" class="player-photo">
+      <div class="info">
+        <div class="name-row" style="display: flex; align-items: center; gap: 5px;">
+          <img src="https://api.fifa.com/api/v3/picture/flags-sq-4/BEL" class="flag-icon" style="width: 20px;">
+          <div class="name">Nicolas RASKIN</div>
+        </div>
+        <div class="position">MIDFIELDER</div>
+      </div>
+    </div>
+<div class="player-card">
+      <img src="https://digitalhub.fifa.com/transform/697ee4f8-3df1-4ce5-a8b9-c9dae1ed6aba/ONANA-Amadou_448364?&io=transform:fill,aspectratio:1x1,width:320,gravity:top&quality=75" alt="Amadou ONANA" class="player-photo">
+      <div class="info">
+        <div class="name-row" style="display: flex; align-items: center; gap: 5px;">
+          <img src="https://api.fifa.com/api/v3/picture/flags-sq-4/BEL" class="flag-icon" style="width: 20px;">
+          <div class="name">Amadou ONANA</div>
+        </div>
+        <div class="position">MIDFIELDER</div>
+      </div>
+    </div>
+<div class="player-card">
+      <img src="https://digitalhub.fifa.com/transform/302b7fb7-6964-4a52-8db4-9c12778b80fa/LUKAKU-Romelu_358112?&io=transform:fill,aspectratio:1x1,width:320,gravity:top&quality=75" alt="Romelu LUKAKU" class="player-photo">
+      <div class="info">
+        <div class="name-row" style="display: flex; align-items: center; gap: 5px;">
+          <img src="https://api.fifa.com/api/v3/picture/flags-sq-4/BEL" class="flag-icon" style="width: 20px;">
+          <div class="name">Romelu LUKAKU</div>
+        </div>
+        <div class="position">FORWARD</div>
+      </div>
+    </div>
+<div class="player-card">
+      <img src="https://digitalhub.fifa.com/transform/78476568-5abb-4047-b6c0-fd9651e0f39d/TROSSARD-Leandro_448355?&io=transform:fill,aspectratio:1x1,width:320,gravity:top&quality=75" alt="Leandro TROSSARD" class="player-photo">
+      <div class="info">
+        <div class="name-row" style="display: flex; align-items: center; gap: 5px;">
+          <img src="https://api.fifa.com/api/v3/picture/flags-sq-4/BEL" class="flag-icon" style="width: 20px;">
+          <div class="name">Leandro TROSSARD</div>
+        </div>
+        <div class="position">FORWARD</div>
+      </div>
+    </div>
+<div class="player-card">
+      <img src="https://digitalhub.fifa.com/transform/df41be47-900d-41fe-90eb-b493f7609869/DOKU-Jeremy_448341?&io=transform:fill,aspectratio:1x1,width:320,gravity:top&quality=75" alt="Jeremy DOKU" class="player-photo">
+      <div class="info">
+        <div class="name-row" style="display: flex; align-items: center; gap: 5px;">
+          <img src="https://api.fifa.com/api/v3/picture/flags-sq-4/BEL" class="flag-icon" style="width: 20px;">
+          <div class="name">Jeremy DOKU</div>
+        </div>
+        <div class="position">FORWARD</div>
+      </div>
+    </div>
+<div class="player-card">
+      <img src="https://digitalhub.fifa.com/transform/5672576a-616d-45a3-8f06-95aa772bb821/LUKEBAKIO-Dodi_448377?&io=transform:fill,aspectratio:1x1,width:320,gravity:top&quality=75" alt="Dodi LUKEBAKIO" class="player-photo">
+      <div class="info">
+        <div class="name-row" style="display: flex; align-items: center; gap: 5px;">
+          <img src="https://api.fifa.com/api/v3/picture/flags-sq-4/BEL" class="flag-icon" style="width: 20px;">
+          <div class="name">Dodi LUKEBAKIO</div>
+        </div>
+        <div class="position">FORWARD</div>
+      </div>
+    </div>
+<div class="player-card">
+      <img src="https://digitalhub.fifa.com/transform/2ce231c2-05f7-4353-921c-242c863a8d54/DE-KETELAERE-Charles_448362?&io=transform:fill,aspectratio:1x1,width:320,gravity:top&quality=75" alt="Charles DE KETELAERE" class="player-photo">
+      <div class="info">
+        <div class="name-row" style="display: flex; align-items: center; gap: 5px;">
+          <img src="https://api.fifa.com/api/v3/picture/flags-sq-4/BEL" class="flag-icon" style="width: 20px;">
+          <div class="name">Charles DE KETELAERE</div>
+        </div>
+        <div class="position">FORWARD</div>
+      </div>
+    </div>
+<div class="player-card">
+      <img src="https://digitalhub.fifa.com/transform/568ca230-b521-4f9c-9601-fb0cb6841fde/FERNANDEZ-PARDO-Matias_494025?&io=transform:fill,aspectratio:1x1,width:320,gravity:top&quality=75" alt="Matias FERNANDEZ-PARDO" class="player-photo">
+      <div class="info">
+        <div class="name-row" style="display: flex; align-items: center; gap: 5px;">
+          <img src="https://api.fifa.com/api/v3/picture/flags-sq-4/BEL" class="flag-icon" style="width: 20px;">
+          <div class="name">Matias FERNANDEZ-PARDO</div>
+        </div>
+        <div class="position">FORWARD</div>
+      </div>
+    </div>
+<div class="player-card">
+      <img src="https://digitalhub.fifa.com/transform/e398c483-fb03-440a-bf59-d785e9bda878/GARCIA-Rudi_344378?&io=transform:fill,aspectratio:1x1,width:320,gravity:top&quality=75" alt="Rudi GARCIA" class="player-photo">
+      <div class="info">
+        <div class="name-row" style="display: flex; align-items: center; gap: 5px;">
+          <img src="https://api.fifa.com/api/v3/picture/flags-sq-4/BEL" class="flag-icon" style="width: 20px;">
+          <div class="name">Rudi GARCIA</div>
+        </div>
+        <div class="position">MANAGER</div>
+      </div>
+    </div>
 
-<div id="page-squad" class="page">
-    <button onclick="voltar()">← VOLTAR</button>
-    <h2>Seleção Gerada</h2>
-    <div class="squad-grid" id="grid"></div>
-</div>
 
-<script>
-let squadData = [];
 
-function copiarScript() { navigator.clipboard.writeText(document.getElementById('scriptConsole').value); }
-function toggleJSON() { 
-    const out = document.getElementById('output');
-    out.style.display = (out.style.display === 'block') ? 'none' : 'block';
-}
-function voltar() {
-    document.getElementById('page-squad').classList.remove('active');
-    document.getElementById('page-converter').classList.add('active');
-}
 
-function converter() {
-    const html = document.getElementById('input').value;
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(html, 'text/html');
-    squadData = Array.from(doc.querySelectorAll('.player-card')).map(card => ({
-        name: card.querySelector('.name')?.innerText.trim().toUpperCase() || '',
-        position: card.querySelector('.position')?.innerText.trim().toUpperCase() || '',
-        src: card.querySelector('.player-photo')?.src || '',
-        flag: card.querySelector('.flag-icon')?.src || ''
-    }));
-    document.getElementById('output').value = 'const squadData = ' + JSON.stringify(squadData, null, 4) + ';';
-    gerarPagina();
-}
 
-function gerarPagina() {
-    document.getElementById('page-converter').classList.remove('active');
-    document.getElementById('page-squad').classList.add('active');
-    const grid = document.getElementById('grid');
-    grid.innerHTML = '';
-    squadData.forEach((p, index) => {
-        const div = document.createElement('div');
-        div.className = 'card floating';
-        div.style.animationDelay = (index * 0.2) + 's';
-        div.innerHTML = `
-            ${p.flag ? `<img src="${p.flag}" class="card-flag">` : ''}
-            <img src="${p.src}" class="card-photo" alt="${p.name}">
-            <p class="name">${p.name}</p>
-            <div class="card-divider"></div>
-            <p class="position">${p.position}</p>
-        `;
-        grid.appendChild(div);
-    });
-}
-</script>
-</body>
-</html>
