@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gerador de Squad FIFA - Escudo</title>
+<style>
+:root{--gold:#FFD700;--blue:#045694;--red:#f43056;--text-dark:#03122b}
+body{margin:0;padding:40px;box-sizing:border-box;font-family:'Arial Black',sans-serif;background:radial-gradient(circle,#0a2e50 0%,#03122b 100%);color:white;min-height:100vh}
+.page{display:none}.page.active{display:block}
+.conversor-container{max-width:1100px;margin:auto;background:rgba(255,255,255,.08);padding:30px;border-radius:20px}
+textarea{width:100%;font-family:monospace;margin-bottom:15px;padding:15px;border:none;border-radius:12px;background:white;color:#333}
+#scriptConsole{height:200px}#input{height:250px}#output{height:300px;display:none}
+button{cursor:pointer;padding:15px 25px;background:var(--red);color:white;border:none;border-radius:10px;font-weight:bold;margin-right:10px}
+.btn-gerar-estilizado {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 15px 40px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 900;
+    color: white;
+    background: #6225E6;
+    border: none;
+    cursor: pointer;
+    transition: 0.5s;
+    box-shadow: 6px 6px 0 black;
+    transform: skewX(-15deg);
+    margin: 30px auto;
+}
+
+.btn-gerar-estilizado:hover {
+    transition: 0.5s;
+    box-shadow: 10px 10px 0 #FBC638;
+}
+
+.btn-gerar-estilizado span {
+    transform: skewX(15deg); /* Corrige a inclinação do texto/ícone */
+    display: flex;
+    align-items: center;
+}
+.squad-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:40px;max-width:1200px;margin:0 auto}
+.card{background:#fff;clip-path:polygon(0% 0%, 100% 0%, 100% 80%, 50% 100%, 0% 80%);padding:30px 20px 60px 20px;display:flex;flex-direction:column;align-items:center;text-align:center;box-shadow:0 10px 25px rgba(0,0,0,0.5)}
+@keyframes float{0%{transform:translateY(0)}50%{transform:translateY(-10px)}100%{transform:translateY(0)}}
+.floating{animation:float 3s ease-in-out infinite}
+.card-flag{width:45px;height:35px;margin-bottom:10px;object-fit:contain}
+.card-photo{width:225px;height:225px;object-fit:contain;margin-bottom:5px;margin-top:-10px}
+.name{color:var(--text-dark);font-size:0.95rem;font-weight:800;margin:5px 0;text-transform:uppercase}
+.card-divider{width:50px;height:2px;background:#ccc;margin:5px 0}
+.position{color:var(--blue);font-size:0.75rem;font-weight:700;text-transform:uppercase;margin-top:2px}
+</style>
+</head>
+<body>
+
+<div id="page-converter" class="page active">
+    <div class="conversor-container">
+        <h2>Conversor FIFA HTML → JSON</h2>
+        <textarea id="scriptConsole">const players = Array.from(document.querySelectorAll('img.image_img__pNjkh')).map(img => { const name = (img.alt || '').trim(); if (!name || name === 'FIFA' || name.includes('GooglePlayStore')) return null; let playerSrc = img.src || img.getAttribute('data-src') || img.currentSrc || ''; if (playerSrc.includes('w3schools')) playerSrc = ''; const badgeCard = img.closest('[class*="badgeCard"]'); let flagSrc = ''; if (badgeCard) { const allImgs = Array.from(badgeCard.querySelectorAll('img')); const flagImg = allImgs.find(i => i !== img && (i.className.includes('flag') || i.src.includes('flags'))); flagSrc = flagImg ? (flagImg.src || flagImg.getAttribute('data-src') || '') : ''; } let position = badgeCard?.querySelector('[class*="playerPosition"]')?.innerText?.trim(); if (!position) position = 'PLAYER'; return `<div class="player-card"><img src="${playerSrc}" class="player-photo"><img src="${flagSrc}" class="flag-icon"><div class="name">${name}</div><div class="position">${position}</div></div>`; }).filter(item => item && item.includes('src="http')).join('\n'); console.log(players);</textarea>
+        <button onclick="copiarScript()">📋 Copiar Script</button>
+        <hr>
+        <p><strong>Cole o HTML dos jogadores:</strong></p>
+        <textarea id="input"></textarea>
+        <button onclick="converter()" class="btn-gerar-estilizado">
+    <span>CONVERTER E GERAR CARDS</span>
+</button>
+        <button onclick="toggleJSON()" style="background:#555">👁️ Mostrar/Esconder JSON</button>
+        <textarea id="output"></textarea>
+    </div>
+</div>
+
+<div id="page-squad" class="page">
+    <button onclick="voltar()">← VOLTAR</button>
+    <h2>Seleção Gerada</h2>
+    <div class="squad-grid" id="grid"></div>
+</div>
+
+<script>
+let squadData = [];
+
+function copiarScript() { navigator.clipboard.writeText(document.getElementById('scriptConsole').value); }
+function toggleJSON() { 
+    const out = document.getElementById('output');
+    out.style.display = (out.style.display === 'block') ? 'none' : 'block';
+}
+function voltar() {
+    document.getElementById('page-squad').classList.remove('active');
+    document.getElementById('page-converter').classList.add('active');
+}
+
+function converter() {
+    const html = document.getElementById('input').value;
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, 'text/html');
+    squadData = Array.from(doc.querySelectorAll('.player-card')).map(card => ({
+        name: card.querySelector('.name')?.innerText.trim().toUpperCase() || '',
+        position: card.querySelector('.position')?.innerText.trim().toUpperCase() || '',
+        src: card.querySelector('.player-photo')?.src || '',
+        flag: card.querySelector('.flag-icon')?.src || ''
+    }));
+    document.getElementById('output').value = 'const squadData = ' + JSON.stringify(squadData, null, 4) + ';';
+    gerarPagina();
+}
+
+function gerarPagina() {
+    document.getElementById('page-converter').classList.remove('active');
+    document.getElementById('page-squad').classList.add('active');
+    const grid = document.getElementById('grid');
+    grid.innerHTML = '';
+    squadData.forEach((p, index) => {
+        const div = document.createElement('div');
+        div.className = 'card floating';
+        div.style.animationDelay = (index * 0.2) + 's';
+        div.innerHTML = `
+            ${p.flag ? `<img src="${p.flag}" class="card-flag">` : ''}
+            <img src="${p.src}" class="card-photo" alt="${p.name}">
+            <p class="name">${p.name}</p>
+            <div class="card-divider"></div>
+            <p class="position">${p.position}</p>
+        `;
+        grid.appendChild(div);
+    });
+}
+</script>
+</body>
+</html>
